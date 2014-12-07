@@ -4,6 +4,7 @@ color RED = color(225, 26, 52);
 color WHITE = color(255, 255, 255);
 
 PImage tile;
+PShape stitch;
 
 int scale;
 boolean isGridVisible;
@@ -23,16 +24,13 @@ void setup() {
     tile.pixels[i] = RED;
   }
   tile.updatePixels();
+  
+  stitch = loadShape("stitch.svg");
+  stitch.disableStyle();
 }
 
 void draw() {
-  background(RED);
-  
-  noSmooth();
-  for (int x = 0; x < width; x += tile.width * scale) {
-    image(tile, x, 0, tile.width * scale, tile.height * scale);
-  }
-  smooth();
+  background(0);
   
   if (isGridVisible) {
     stroke(134);
@@ -41,6 +39,14 @@ void draw() {
     }
     for (int y = 0; y < height; y += scale) {
       line(0, y, width, y);
+    }
+  }
+
+  tile.loadPixels();
+  for (int x = 0; x < width; x += scale) {
+    for (int y = 0; y < height; y += scale) {
+      fill(tile.pixels[canvasToTileX(x) + tile.width * canvasToTileY(y)]);
+      shape(stitch, x, y, scale, scale);
     }
   }
 }
