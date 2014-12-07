@@ -5,9 +5,14 @@ color WHITE = color(255, 255, 255);
 
 PImage tile;
 
+int scale;
+
 void setup() {
   size(800, 600);
-  tile = createImage(80, height, RGB);
+  
+  scale = 16;
+  
+  tile = createImage(ceil(80 / scale), ceil(height / scale), RGB);
   tile.loadPixels();
   for (int i = 0; i < tile.pixels.length; i++) {
     tile.pixels[i] = RED;
@@ -19,8 +24,8 @@ void setup() {
 }
 
 void draw() {
-  for (int x = 0; x < width; x += tile.width) {
-    image(tile, x, 0);
+  for (int x = 0; x < width; x += tile.width * scale) {
+    image(tile, x, 0, tile.width * scale, tile.height * scale);
   }
 }
 
@@ -40,9 +45,9 @@ void mouseReleased() {
 }
 
 int canvasToTileX(int canvasX) {
-  return canvasX % tile.width;
+  return canvasX / scale % tile.width;
 }
 
 int canvasToTileY(int canvasY) {
-  return canvasY % tile.height;
+  return canvasY / scale % tile.height;
 }
