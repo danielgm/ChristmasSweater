@@ -24,9 +24,11 @@ void setup() {
 }
 
 void draw() {
+  noSmooth();
   for (int x = 0; x < width; x += tile.width * scale) {
     image(tile, x, 0, tile.width * scale, tile.height * scale);
   }
+  smooth();
 }
 
 void mousePressed() {
