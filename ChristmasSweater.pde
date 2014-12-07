@@ -73,6 +73,18 @@ void keyReleased() {
     case 'g':
       isGridVisible = !isGridVisible;
       break;
+    
+    case 'l':
+      tile = loadImage("tile.png");
+      break;
+    
+    case 's':
+      tile.save("tile.png");
+      break;
+      
+    case 'r':
+      save("render.png");
+      break;
       
     case CODED:
       switch (keyCode) {
@@ -81,7 +93,7 @@ void keyReleased() {
           break;
           
         case DOWN:
-          scale /= 2;
+          scale /= 2;  
           break;
       }
   }
