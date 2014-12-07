@@ -72,6 +72,18 @@ void keyReleased() {
   switch (key) {
     case 'g':
       isGridVisible = !isGridVisible;
+      break;
+      
+    case CODED:
+      switch (keyCode) {
+        case UP:
+          scale *= 2;
+          break;
+          
+        case DOWN:
+          scale /= 2;
+          break;
+      }
   }
 }
 
