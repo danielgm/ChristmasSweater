@@ -6,6 +6,7 @@ color WHITE = color(255, 255, 255);
 PImage tile;
 
 int scale;
+boolean isGridVisible;
 
 int prevTileX;
 int prevTileY;
@@ -14,6 +15,7 @@ void setup() {
   size(800, 600);
   
   scale = 16;
+  isGridVisible = true;
   
   tile = createImage(ceil(192 / scale), ceil(height / scale), RGB);
   tile.loadPixels();
@@ -24,11 +26,23 @@ void setup() {
 }
 
 void draw() {
+  background(RED);
+  
   noSmooth();
   for (int x = 0; x < width; x += tile.width * scale) {
     image(tile, x, 0, tile.width * scale, tile.height * scale);
   }
   smooth();
+  
+  if (isGridVisible) {
+    stroke(134);
+    for (int x = 0; x < width; x += scale) {
+      line(x, 0, x, height);
+    }
+    for (int y = 0; y < height; y += scale) {
+      line(0, y, width, y);
+    }
+  }
 }
 
 void mousePressed() {
@@ -52,6 +66,13 @@ void mouseDragged() {
 }
 
 void mouseReleased() {
+}
+
+void keyReleased() {
+  switch (key) {
+    case 'g':
+      isGridVisible = !isGridVisible;
+  }
 }
 
 void swapPixel(int tileX, int tileY) {
