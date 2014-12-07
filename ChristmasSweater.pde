@@ -7,18 +7,18 @@ PImage tile;
 
 int scale;
 
+int prevTileX;
+int prevTileY;
+
 void setup() {
   size(800, 600);
   
   scale = 16;
   
-  tile = createImage(ceil(80 / scale), ceil(height / scale), RGB);
+  tile = createImage(ceil(192 / scale), ceil(height / scale), RGB);
   tile.loadPixels();
   for (int i = 0; i < tile.pixels.length; i++) {
     tile.pixels[i] = RED;
-    if (i < tile.pixels.length/2) {
-      tile.pixels[i] = WHITE;
-    }
   }
   tile.updatePixels();
 }
@@ -32,11 +32,31 @@ void draw() {
 }
 
 void mousePressed() {
+  int tileX = canvasToTileX(mouseX);
+  int tileY = canvasToTileY(mouseY);
+  swapPixel(tileX, tileY);
+  prevTileX = tileX;
+  prevTileY = tileY;
+}
+
+void mouseDragged() {
+  if (mousePressed) {
+    int tileX = canvasToTileX(mouseX);
+    int tileY = canvasToTileY(mouseY);
+    if (tileX != prevTileX || tileY != prevTileY) {
+      swapPixel(tileX, tileY);
+      prevTileX = tileX;
+      prevTileY = tileY;
+    }
+  }
 }
 
 void mouseReleased() {
+}
+
+void swapPixel(int tileX, int tileY) {
   tile.loadPixels();
-  int index = canvasToTileX(mouseX) + tile.width * canvasToTileY(mouseY);
+  int index = tileX + tile.width * tileY;
   if (tile.pixels[index] == WHITE) {
     tile.pixels[index] = RED;
   }
