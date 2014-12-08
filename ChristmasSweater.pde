@@ -76,16 +76,13 @@ void keyReleased() {
       save("render.png");
       break;
       
-    case CODED:
-      switch (keyCode) {
-        case UP:
-          scale *= 2;
-          break;
+    case '=':
+      scale *= 2;
+      break;
           
-        case DOWN:
-          scale /= 2;  
-          break;
-      }
+    case '-':
+      scale /= 2;
+      break;
   }
 }
 
