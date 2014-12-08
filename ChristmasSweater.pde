@@ -7,7 +7,6 @@ PImage tile;
 PShape stitch;
 
 int scale;
-boolean isGridVisible;
 
 int prevTileX;
 int prevTileY;
@@ -16,7 +15,6 @@ void setup() {
   size(800, 600);
   
   scale = 16;
-  isGridVisible = true;
   
   tile = createImage(ceil(192 / scale), ceil(height / scale), RGB);
   tile.loadPixels();
@@ -32,16 +30,6 @@ void setup() {
 void draw() {
   background(0);
   
-  if (isGridVisible) {
-    stroke(134);
-    for (int x = 0; x < width; x += scale) {
-      line(x, 0, x, height);
-    }
-    for (int y = 0; y < height; y += scale) {
-      line(0, y, width, y);
-    }
-  }
-
   tile.loadPixels();
   for (int x = 0; x < width; x += scale) {
     for (int y = 0; y < height; y += scale) {
@@ -75,11 +63,7 @@ void mouseReleased() {
 }
 
 void keyReleased() {
-  switch (key) {
-    case 'g':
-      isGridVisible = !isGridVisible;
-      break;
-    
+  switch (key) {  
     case 'l':
       tile = loadImage("tile.png");
       break;
