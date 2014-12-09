@@ -139,6 +139,19 @@ void saveRender() {
   render.beginDraw();
   redraw(render);
   render.endDraw();
+  
+  render.loadPixels();
+  for (int i = 0; i < render.pixels.length; i++) {
+    color c = render.pixels[i];
+    if (2 * red(c) - green(c) - blue(c) > 8) {
+      render.pixels[i] = color(0, 0, 0, 255 - red(c));
+    }
+    else {
+      render.pixels[i] = color(red(c), green(c), blue(c), 255);
+    }
+  }
+  render.updatePixels();
+  
   render.save("render.png");
   
   scale = originalScale;
