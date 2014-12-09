@@ -1,5 +1,6 @@
 
 
+color TRANSPARENT = color(0, 0, 0, 0);
 color RED = color(225, 26, 52);
 color WHITE = color(255, 255, 255);
 
@@ -16,7 +17,7 @@ void setup() {
   
   scale = 16;
   
-  tile = createImage(ceil(176 / scale), ceil(height / scale), RGB);
+  tile = createImage(ceil(196 / scale), ceil(height / scale), RGB);
   tile.loadPixels();
   for (int i = 0; i < tile.pixels.length; i++) {
     tile.pixels[i] = RED;
@@ -69,7 +70,7 @@ void keyReleased() {
       break;
       
     case 'r':
-      save("render.png");
+      saveRender();
       break;
       
     case '=':
@@ -85,13 +86,17 @@ void keyReleased() {
 }
 
 void redraw() {
-  background(0);
+  redraw(this.g);
+}
+
+void redraw(PGraphics pg) {
+  pg.background(0);
   
   tile.loadPixels();
-  for (int x = 0; x < width; x += scale) {
-    for (int y = 0; y < height; y += scale) {
-      fill(tile.pixels[canvasToTileX(x) + tile.width * canvasToTileY(y)]);
-      shape(stitch, x, y, scale, scale);
+  for (int x = 0; x < pg.width; x += scale) {
+    for (int y = 0; y < pg.height; y += scale) {
+      pg.fill(tile.pixels[canvasToTileX(x) + tile.width * canvasToTileY(y)]);
+      pg.shape(stitch, x, y, scale, scale);
     }
   }
 }
@@ -124,4 +129,17 @@ int canvasToTileX(int canvasX) {
 
 int canvasToTileY(int canvasY) {
   return canvasY / scale % tile.height;
+}
+
+void saveRender() {
+  int originalScale = scale;
+  scale = 24;
+  
+  PGraphics render = createGraphics(2100, 1800);
+  render.beginDraw();
+  redraw(render);
+  render.endDraw();
+  render.save("render.png");
+  
+  scale = originalScale;
 }
