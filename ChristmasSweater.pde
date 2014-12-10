@@ -137,20 +137,18 @@ void saveRender() {
   
   PGraphics render = createGraphics(2100, 1800);
   render.beginDraw();
-  redraw(render);
-  render.endDraw();
+  render.background(0, 0, 0, 0);
+  render.fill(255);
   
-  render.loadPixels();
-  for (int i = 0; i < render.pixels.length; i++) {
-    color c = render.pixels[i];
-    if (2 * red(c) - green(c) - blue(c) > 8) {
-      render.pixels[i] = color(0, 0, 0, 255 - red(c));
-    }
-    else {
-      render.pixels[i] = color(red(c), green(c), blue(c), 255);
+  tile.loadPixels();
+  for (int x = 0; x < render.width; x += scale) {
+    for (int y = 0; y < render.height; y += scale) {
+      if (tile.pixels[canvasToTileX(x) + tile.width * canvasToTileY(y)] == color(255)) {
+        render.shape(stitch, x, y, scale, scale);
+      }
     }
   }
-  render.updatePixels();
+  render.endDraw();
   
   render.save("render.png");
   
