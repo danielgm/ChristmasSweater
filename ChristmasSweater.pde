@@ -1,10 +1,12 @@
 
 
+import gifAnimation.*;
+
 color TRANSPARENT = color(0, 0, 0, 0);
 color RED = color(225, 26, 52);
 color WHITE = color(255, 255, 255);
 
-PImage tile;
+PImage[] tiles;
 PShape stitch;
 
 int scale;
@@ -12,17 +14,28 @@ int scale;
 int prevTileX;
 int prevTileY;
 
+int currFrame;
+int numFrames;
+
 void setup() {
-  size(700, 600);
+  size(800, 600);
   
   scale = 16;
   
-  tile = createImage(ceil(196 / scale), ceil(height / scale), RGB);
-  tile.loadPixels();
-  for (int i = 0; i < tile.pixels.length; i++) {
-    tile.pixels[i] = RED;
+  currFrame = 0;
+  numFrames = 2;
+  
+  tiles = new PImage[numFrames];
+  for (int i = 0; i < numFrames; i++) {
+    PImage tile = createImage(ceil(196 / scale), ceil(height / scale), RGB);
+    tile.loadPixels();
+    for (int j = 0; j < tile.pixels.length; j++) {
+      tile.pixels[j] = RED;
+    }
+    tile.updatePixels();
+    
+    tiles[i] = tile;
   }
-  tile.updatePixels();
   
   stitch = loadShape("stitch.svg");
   stitch.disableStyle();
@@ -61,12 +74,12 @@ void mouseReleased() {
 void keyReleased() {
   switch (key) {  
     case 'l':
-      tile = loadImage("tile.png");
+      loadTiles();
       redraw();
       break;
     
     case 's':
-      tile.save("tile.png");
+      saveTiles();
       break;
       
     case 'r':
@@ -82,6 +95,11 @@ void keyReleased() {
       scale /= 2;
       redraw();
       break;
+     
+    case ' ':
+      currFrame = (currFrame + 1) % numFrames;
+      redraw();
+      break;
   }
 }
 
@@ -90,7 +108,13 @@ void redraw() {
 }
 
 void redraw(PGraphics pg) {
+  redraw(pg, currFrame);
+}
+
+void redraw(PGraphics pg, int frameIndex) {
   pg.background(0);
+  
+  PImage tile = tiles[frameIndex];
   
   tile.loadPixels();
   for (int x = 0; x < pg.width; x += scale) {
@@ -102,6 +126,8 @@ void redraw(PGraphics pg) {
 }
 
 void tilePixelChanged(int tileX, int tileY) {
+  PImage tile = tiles[currFrame];
+  
   tile.loadPixels();
   for (int x = tileX * scale; x < width; x += tile.width * scale) {
     for (int y = tileY * scale; y < height; y += tile.height * scale) {
@@ -112,6 +138,8 @@ void tilePixelChanged(int tileX, int tileY) {
 }
 
 void swapPixel(int tileX, int tileY) {
+  PImage tile = tiles[currFrame];
+  
   tile.loadPixels();
   int index = tileX + tile.width * tileY;
   if (tile.pixels[index] == WHITE) {
@@ -124,33 +152,40 @@ void swapPixel(int tileX, int tileY) {
 }
 
 int canvasToTileX(int canvasX) {
-  return canvasX / scale % tile.width;
+  return canvasX / scale % tiles[0].width;
 }
 
 int canvasToTileY(int canvasY) {
-  return canvasY / scale % tile.height;
+  return canvasY / scale % tiles[0].height;
+}
+
+void loadTiles() {
+  for (int i = 0; i < numFrames; i++) {
+    tiles[i] = loadImage("tile" + i + ".png");
+  }
+}
+
+void saveTiles() {
+  for (int i = 0; i < numFrames; i++) {
+    tiles[i].save("tile" + i + ".png");
+  }
 }
 
 void saveRender() {
-  int originalScale = scale;
-  scale = 24;
+  PImage tile = tiles[currFrame];
   
-  PGraphics render = createGraphics(2100, 1800);
-  render.beginDraw();
-  render.background(0, 0, 0, 0);
-  render.fill(255);
+  GifMaker gif = new GifMaker(this, "render.gif");
+  gif.setRepeat(0); // Endless animation.
   
-  tile.loadPixels();
-  for (int x = 0; x < render.width; x += scale) {
-    for (int y = 0; y < render.height; y += scale) {
-      if (tile.pixels[canvasToTileX(x) + tile.width * canvasToTileY(y)] == color(255)) {
-        render.shape(stitch, x, y, scale, scale);
-      }
-    }
+  for (int i = 0; i < numFrames; i++) {
+    PGraphics render = createGraphics(width, height);
+    render.beginDraw();
+    redraw(render, i);
+    render.endDraw();
+    
+    gif.setDelay(1500);
+    gif.addFrame(render);
   }
-  render.endDraw();
   
-  render.save("render.png");
-  
-  scale = originalScale;
+  gif.finish();
 }
