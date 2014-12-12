@@ -17,17 +17,21 @@ int prevTileY;
 int currFrame;
 int numFrames;
 
+boolean isShiftDown;
+
 void setup() {
-  size(800, 600);
+  size(800, 1200);
   
   scale = 16;
   
   currFrame = 0;
-  numFrames = 2;
+  numFrames = 10;
+  
+  isShiftDown = false;
   
   tiles = new PImage[numFrames];
   for (int i = 0; i < numFrames; i++) {
-    PImage tile = createImage(ceil(196 / scale), ceil(height / scale), RGB);
+    PImage tile = createImage(100, ceil(height / scale), RGB);
     tile.loadPixels();
     for (int j = 0; j < tile.pixels.length; j++) {
       tile.pixels[j] = RED;
@@ -71,8 +75,14 @@ void mouseDragged() {
 void mouseReleased() {
 }
 
+void keyPressed() {
+  if (key == CODED && keyCode == SHIFT) {
+    isShiftDown = true;
+  }
+}
+
 void keyReleased() {
-  switch (key) {  
+  switch (key) {
     case 'l':
       loadTiles();
       redraw();
@@ -97,9 +107,18 @@ void keyReleased() {
       break;
      
     case ' ':
-      currFrame = (currFrame + 1) % numFrames;
+      if (isShiftDown) {
+        currFrame = (currFrame - 1) % numFrames;
+      }
+      else {
+        currFrame = (currFrame + 1) % numFrames;
+      }
       redraw();
       break;
+  }
+  
+  if (key == CODED && keyCode == SHIFT) {
+    isShiftDown = false;
   }
 }
 
@@ -183,7 +202,7 @@ void saveRender() {
     redraw(render, i);
     render.endDraw();
     
-    gif.setDelay(1500);
+    gif.setDelay(500);
     gif.addFrame(render);
   }
   
