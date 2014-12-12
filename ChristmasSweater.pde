@@ -108,7 +108,7 @@ void keyReleased() {
      
     case ' ':
       if (isShiftDown) {
-        currFrame = (currFrame - 1) % numFrames;
+        currFrame = (numFrames + currFrame - 1) % numFrames;
       }
       else {
         currFrame = (currFrame + 1) % numFrames;
