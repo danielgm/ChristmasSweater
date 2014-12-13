@@ -60,7 +60,7 @@ void mousePressed() {
 }
 
 void mouseDragged() {
-  if (mousePressed) {
+  if (mousePressed && mouseX >= 0 && mouseY >= 0 && mouseX < width && mouseY < height) {
     int tileX = canvasToTileX(mouseX);
     int tileY = canvasToTileY(mouseY);
     if (tileX != prevTileX || tileY != prevTileY) {
