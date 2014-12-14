@@ -169,7 +169,7 @@ void swapPixel(int tileX, int tileY) {
 
   tile.loadPixels();
   int index = tileX + tile.width * tileY;
-  if (tile.pixels[index] == WHITE) {
+  if (similarity(tile.pixels[index], WHITE) > similarity(tile.pixels[index], RED)) {
     tile.pixels[index] = RED;
   }
   else {
@@ -190,6 +190,10 @@ void loadTiles() {
   for (int i = 0; i < numFrames; i++) {
     tiles[i] = loadImage("tile" + i + ".png");
   }
+}
+
+float similarity(color c0, color c1) {
+  return 1 - (abs(red(c1) - red(c0)) + abs(green(c1) - green(c0)) + abs(green(c1) - green(c0))) / 768;
 }
 
 void saveTiles() {
